@@ -9,8 +9,6 @@ const useFetchTickets = () => {
 
   const auth = useAuth();
 
-  console.log("auth:", auth);
-
   const { userData, loading } = auth || {};
   const { _id: userId } = userData || {};
 

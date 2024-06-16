@@ -16,10 +16,6 @@ const Dashboard = () => {
 
   const isDashboardEmpty = hasNoTickets && !isTicketFetching;
 
-  console.log("isDashboardEmpty:", isDashboardEmpty);
-  console.log("isTicketFetching:", isTicketFetching);
-  console.log("hasNoTickets:", hasNoTickets);
-
   if (isTicketFetching) {
     return (
       <Box
