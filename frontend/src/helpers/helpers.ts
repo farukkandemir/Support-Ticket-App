@@ -38,7 +38,7 @@ export const apiCallToServer = async ({
   const jsonStringifyBody =
     method === "POST" || method === "PUT" ? { body: JSON.stringify(data) } : {};
 
-  return await fetch(`http://localhost:5000/api/${path}`, {
+  return await fetch(`${import.meta.env.VITE_API_BASE_URL}/${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",
