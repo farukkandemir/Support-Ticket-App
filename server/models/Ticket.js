@@ -19,6 +19,11 @@ const ticketSchema = new Schema({
     ref: "User",
     required: true,
   },
+  replies: {
+    type: [String],
+    required: false,
+    default: [],
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

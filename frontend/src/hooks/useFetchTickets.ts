@@ -16,7 +16,7 @@ const useFetchTickets = () => {
     try {
       const result = await apiCallToServer({
         method: "POST",
-        path: "tickets/get-tickets-for-user",
+        path: "tickets/get-tickets",
         data: { userId },
         callback: (res: any) => res,
       });

@@ -44,13 +44,13 @@ const AdminDashboard = () => {
       >
         <Navbar />
         <Typography variant="h5">Admin Dashboard</Typography>
+
         {isTicketFetching ? (
           <TableSkeleton />
         ) : hasNoTickets ? (
           <Typography variant="body1">No tickets found!</Typography>
         ) : (
           <TicketsTable
-            admin
             tickets={tickets}
             openTicketDetails={openTicketDetails}
           />

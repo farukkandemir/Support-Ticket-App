@@ -12,6 +12,7 @@ export type Ticket = {
   subject: string;
   priority: string;
   status: string;
+  replies: string[] | [];
   createdAt?: string;
 };
 
@@ -21,8 +22,8 @@ type TicketContextType = {
   isTicketFetching: boolean;
   hasNoTickets: boolean;
   createTicket: (newTicket: Ticket) => any;
-  onDelete: (ticketId: number) => any;
   statusCounts: { [key: string]: number };
+  isAdmin: boolean;
 };
 
 const TicketContext = createContext<TicketContextType | undefined>(undefined);
@@ -41,11 +42,11 @@ export const TicketProvider: React.FC<{ children: ReactNode }> = ({
   const auth = useAuth();
   const { userData } = auth || {};
 
-  const { _id: userId } = userData || {};
+  const { _id: userId, role } = userData || {};
 
   const { tickets, setTickets, isTicketFetching } = useFetchTickets();
 
-  const { createTicket: crudCreateTicket, onDelete } = useCrudFunctions({
+  const { createTicket: crudCreateTicket } = useCrudFunctions({
     setTickets,
   });
 
@@ -78,6 +79,8 @@ export const TicketProvider: React.FC<{ children: ReactNode }> = ({
 
   const hasNoTickets = !tickets.length;
 
+  const isAdmin = role === "admin";
+
   return (
     <TicketContext.Provider
       value={{
@@ -87,7 +90,7 @@ export const TicketProvider: React.FC<{ children: ReactNode }> = ({
         isTicketFetching,
         hasNoTickets,
         createTicket: createUserTicket,
-        onDelete,
+        isAdmin,
       }}
     >
       {children}

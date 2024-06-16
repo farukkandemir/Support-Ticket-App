@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import TicketsTable from "./TicketsTable";
 import { useTickets } from "../context/TicketsProvider";
 import { capitalizeFirstLetter } from "../helpers/helpers";
+import { useNavigate } from "react-router-dom";
 
 const TicketList = ({
   openNewTicketForm,
@@ -9,6 +10,11 @@ const TicketList = ({
   openNewTicketForm: () => void;
 }) => {
   const { tickets, statusCounts } = useTickets();
+
+  const navigate = useNavigate();
+
+  const openTicketDetails = (ticketId: number) =>
+    navigate(`/ticket/${ticketId}`);
 
   return (
     <Box
@@ -41,20 +47,6 @@ const TicketList = ({
           gap: "1rem",
         }}
       >
-        {/* {[...Array(3)].map((_, index) => (
-          <Box
-            key={index}
-            sx={{
-              padding: "1rem",
-              boxShadow: "0 0 5px 0 rgba(0,0,0,0.1)",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-            }}
-          >
-            stats cards
-          </Box>
-        ))} */}
-
         {Object.entries(statusCounts).map(([status, count]) => (
           <Box
             key={status}
@@ -73,7 +65,7 @@ const TicketList = ({
         ))}
       </Box>
 
-      <TicketsTable tickets={tickets} />
+      <TicketsTable tickets={tickets} openTicketDetails={openTicketDetails} />
     </Box>
   );
 };

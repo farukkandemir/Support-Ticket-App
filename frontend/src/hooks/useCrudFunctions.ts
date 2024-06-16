@@ -72,10 +72,40 @@ const useCrudFunctions = ({
     };
   };
 
+  const addAdminReply = async ({
+    ticketId,
+    reply,
+  }: {
+    ticketId: number;
+    reply: string;
+  }) => {
+    const response = await apiCallToServer({
+      method: "POST",
+      path: `tickets/add-admin-reply/${ticketId}`,
+      data: { reply },
+      callback: (res: any) => res,
+    });
+
+    if (!response.success) {
+      toast.error(response.message || "Failed to add reply!");
+      return {
+        success: false,
+      };
+    }
+
+    toast.success(response.message || "Reply added successfully!");
+
+    return {
+      success: true,
+      data: response.data,
+    };
+  };
+
   return {
     createTicket,
     onDelete,
     updateStatus,
+    addAdminReply,
   };
 };
 

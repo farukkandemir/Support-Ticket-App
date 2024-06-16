@@ -85,7 +85,7 @@ const getAllTickets = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: tickets || [],
+      data: !!tickets.length ? tickets : [],
     });
   } catch (error) {
     console.error("Error fetching tickets:", error);
@@ -221,10 +221,58 @@ const deleteTicket = async (req, res) => {
   }
 };
 
+const addAdminReply = async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      message: "Method not allowed",
+    });
+  }
+
+  const { id } = req.params;
+  const { reply } = req.body;
+
+  if (!id || !reply) {
+    return res.status(400).json({
+      success: false,
+      message: "No ticket ID or reply provided",
+    });
+  }
+
+  try {
+    const updatedTicket = await Ticket.findOneAndUpdate(
+      { id },
+      { $push: { replies: reply } },
+      { new: true }
+    );
+
+    if (!updatedTicket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    console.log(`Email sent for updated ticket with ID: ${updatedTicket._id}`);
+
+    return res.status(200).json({
+      success: true,
+      message: "Reply added successfully",
+      data: updatedTicket,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createNewTicket,
   getAllTickets,
   getTicketById,
   updateTicketStatus,
   deleteTicket,
+  addAdminReply,
 };
