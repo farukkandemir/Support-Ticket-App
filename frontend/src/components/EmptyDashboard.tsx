@@ -45,7 +45,7 @@ const EmptyDashboard = ({
           }}
         >
           <Typography variant="h4" gutterBottom>
-            Welcome to Ticket System
+            Welcome to Ticket Master
           </Typography>
           <Typography variant="body1" paragraph>
             You have no tickets yet. Click the button below to create a new

@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import { apiCallToServer } from "../helpers/helpers";
 import { Ticket } from "../context/TicketsProvider";
+import { useAuth } from "../context/AuthProvider";
 
 const useFetchTickets = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isTicketFetching, setIsTicketFetching] = useState(true);
 
+  const auth = useAuth();
+
+  const { userData, loading } = auth || {};
+  const { _id: userId } = userData || {};
+
   const fetchTickets = async () => {
     try {
       const result = await apiCallToServer({
-        method: "GET",
-        path: "tickets",
+        method: "POST",
+        path: "tickets/get-tickets-for-user",
+        data: { userId },
         callback: (res: any) => res,
       });
 
@@ -25,10 +32,10 @@ const useFetchTickets = () => {
   };
 
   useEffect(() => {
-    if (isTicketFetching) {
+    if (isTicketFetching && !loading && userId) {
       fetchTickets();
     }
-  }, [isTicketFetching]);
+  }, [isTicketFetching, loading, userId]);
 
   return {
     tickets,

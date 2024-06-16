@@ -1,6 +1,9 @@
 import { Box, Typography } from "@mui/material";
+import { useAuth } from "../context/AuthProvider";
 
 const Navbar = () => {
+  const { userData, logout } = useAuth();
+
   return (
     <Box
       sx={{
@@ -13,7 +16,7 @@ const Navbar = () => {
     >
       <Box>
         <Typography variant="h5" color={"primary"}>
-          AidAtlas
+          Ticket Master
         </Typography>
       </Box>
       <Box>navlinks</Box>
@@ -21,9 +24,10 @@ const Navbar = () => {
         sx={{
           cursor: "pointer",
         }}
+        onClick={logout}
       >
         <Typography variant="body1" color="secondary">
-          faruk@gmail.com
+          {userData?.email}
         </Typography>
       </Box>
     </Box>

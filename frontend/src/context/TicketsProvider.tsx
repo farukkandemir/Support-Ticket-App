@@ -1,6 +1,8 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import useFetchTickets from "../hooks/useFetchTickets";
 import useCrudFunctions from "../hooks/useCrudFunctions";
+import { useAuth } from "./AuthProvider";
+import toast from "react-hot-toast";
 
 export type Ticket = {
   id: number;
@@ -36,11 +38,24 @@ export const useTickets = () => {
 export const TicketProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const auth = useAuth();
+  const { userData } = auth || {};
+
+  const { _id: userId } = userData || {};
+
   const { tickets, setTickets, isTicketFetching } = useFetchTickets();
 
-  const { createTicket, onDelete } = useCrudFunctions({
+  const { createTicket: crudCreateTicket, onDelete } = useCrudFunctions({
     setTickets,
   });
+
+  const createUserTicket = async (newTicket: Ticket) => {
+    if (!userId) {
+      return toast.error("User session expired. Please login again.");
+    }
+
+    await crudCreateTicket(newTicket, userId);
+  };
 
   const getStatusCounts = (tickets: Ticket[]) => {
     const statusCounts: { [key: string]: number } = {
@@ -71,7 +86,7 @@ export const TicketProvider: React.FC<{ children: ReactNode }> = ({
         statusCounts,
         isTicketFetching,
         hasNoTickets,
-        createTicket,
+        createTicket: createUserTicket,
         onDelete,
       }}
     >

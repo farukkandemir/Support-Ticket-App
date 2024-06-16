@@ -17,7 +17,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/tickets", require("./routes/ticket-routes"));
+app.use("/api/tickets", require("./routes/ticket"));
+app.use("/api/register", require("./routes/register"));
+app.use("/api/login", require("./routes/login"));
 
 mongoose
   .connect(process.env.MONGO_DB_URI)

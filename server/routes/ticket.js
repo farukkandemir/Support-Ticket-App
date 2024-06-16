@@ -8,7 +8,7 @@ const {
   deleteTicket,
 } = require("../controllers/ticket-controller");
 
-router.route("/").get(getAllTickets);
+router.route("/get-tickets-for-user").post(getAllTickets);
 router.route("/create-ticket").post(createNewTicket);
 router.route("/get-ticket/:id").get(getTicketById);
 router.route("/update-ticket-status/:id").put(updateTicketStatus);

@@ -1,8 +1,18 @@
-import { Box, Button, Container, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
 import InputTextFieldWithLabel from "../components/InputTextFieldWithLabel";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { apiCallToServer, capitalizeFirstLetter } from "../helpers/helpers";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { useAuth } from "../context/AuthProvider";
 
 const accountCreationSchema = z.object({
   fullName: z.string().min(1, { message: "Full name is required" }),
@@ -10,7 +20,18 @@ const accountCreationSchema = z.object({
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
-  // add role field to be either "user" or "admin"
+  role: z
+    .string()
+    .nullable()
+    .refine(
+      (role) => {
+        if (role === null) {
+          return false;
+        }
+        return true;
+      },
+      { message: "Role is required" }
+    ),
 });
 
 type AccountCreationFieldsType = z.infer<typeof accountCreationSchema>;
@@ -30,6 +51,10 @@ const SignUp = () => {
     resolver: zodResolver(accountCreationSchema),
   });
 
+  const { login } = useAuth();
+
+  const [isRegistering, setIsRegistering] = useState(false);
+
   const accountCreationField: AccountCreationField[] = [
     {
       label: "Full Name",
@@ -48,8 +73,26 @@ const SignUp = () => {
     },
   ];
 
-  const onFormSubmit = (data: any) => {
-    console.log(data);
+  const onFormSubmit: SubmitHandler<AccountCreationFieldsType> = async (
+    data
+  ) => {
+    setIsRegistering(true);
+
+    const response = await apiCallToServer({
+      method: "POST",
+      path: "register",
+      data,
+      callback: (data: any) => data,
+    });
+
+    if (!response.success) {
+      setIsRegistering(false);
+      return toast.error(response.message);
+    }
+
+    login(response.token, response.user);
+
+    toast.success("Account created successfully!");
   };
 
   return (
@@ -95,13 +138,49 @@ const SignUp = () => {
                 inputType="register-based"
                 register={register}
                 error={!!errors[field.name]}
-                helperText={`${field.label} is required`}
+                helperText={errors[field.name]?.message}
               />
             ))}
           </Box>
 
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+            }}
+          >
+            {["user", "admin"].map((role) => (
+              <Box
+                key={role}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <input
+                  type="radio"
+                  id={role}
+                  {...register("role")}
+                  value={role}
+                />
+                <label htmlFor={role}>{capitalizeFirstLetter(role)}</label>
+              </Box>
+            ))}
+            {errors.role?.message && (
+              <Typography color="error" variant="caption">
+                {errors.role.message}
+              </Typography>
+            )}
+          </Box>
+
           <Button type="submit" variant="contained">
-            Sign Up
+            {isRegistering ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Register"
+            )}
           </Button>
         </Box>
       </form>

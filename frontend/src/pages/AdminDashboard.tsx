@@ -2,6 +2,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { useTickets } from "../context/TicketsProvider";
 import TicketsTable from "../components/TicketsTable";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const TableSkeleton = () => {
   return (
@@ -41,8 +42,8 @@ const AdminDashboard = () => {
           height: "100%",
         }}
       >
+        <Navbar />
         <Typography variant="h5">Admin Dashboard</Typography>
-
         {isTicketFetching ? (
           <TableSkeleton />
         ) : hasNoTickets ? (

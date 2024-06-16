@@ -7,11 +7,14 @@ const useCrudFunctions = ({
 }: {
   setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
 }) => {
-  const createTicket = async (newTicket: Ticket) => {
+  const createTicket = async (newTicket: Ticket, userId: string) => {
     const response = await apiCallToServer({
       method: "POST",
       path: "tickets/create-ticket",
-      data: newTicket,
+      data: {
+        ticket: newTicket,
+        userId,
+      },
       callback: (res: any) => res,
     });
 

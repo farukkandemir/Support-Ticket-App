@@ -1,4 +1,9 @@
 const Ticket = require("../models/Ticket");
+const {
+  findUserById,
+  createTicket,
+  associateTicketWithUser,
+} = require("../helpers/user-helpers");
 
 const createNewTicket = async (req, res) => {
   if (req.method !== "POST") {
@@ -8,18 +13,26 @@ const createNewTicket = async (req, res) => {
     });
   }
 
-  const ticket = req.body;
+  const { ticket, userId } = req.body;
 
-  if (!ticket) {
+  if (!ticket || !userId) {
     return res.status(400).json({
       success: false,
-      message: "No ticket details provided",
+      message: "Ticket details and userId are required",
     });
   }
 
   try {
-    const newTicket = new Ticket(ticket);
-    await newTicket.save();
+    const user = await findUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const newTicket = await createTicket(ticket, user._id);
+    await associateTicketWithUser(user, newTicket._id);
 
     console.log(`Email sent for new ticket with ID: ${newTicket._id}`);
 
@@ -29,34 +42,60 @@ const createNewTicket = async (req, res) => {
       data: newTicket,
     });
   } catch (error) {
+    console.error("Error creating ticket:", error);
     return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 const getAllTickets = async (req, res) => {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
       message: "Method not allowed",
     });
   }
 
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: "User ID is required",
+    });
+  }
+
   try {
-    const tickets = await Ticket.find();
+    const user = await findUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const isAdmin = user.role === "admin";
+
+    const tickets = isAdmin
+      ? await Ticket.find()
+      : await Ticket.find({ user: user._id });
 
     return res.status(200).json({
       success: true,
-      data: tickets,
+      data: tickets || [],
     });
   } catch (error) {
+    console.error("Error fetching tickets:", error);
     return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 const getTicketById = async (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -95,6 +134,7 @@ const getTicketById = async (req, res) => {
     });
   }
 };
+
 const updateTicketStatus = async (req, res) => {
   if (req.method !== "PUT") {
     return res.status(405).json({
@@ -141,6 +181,7 @@ const updateTicketStatus = async (req, res) => {
     });
   }
 };
+
 const deleteTicket = async (req, res) => {
   if (req.method !== "DELETE") {
     return res.status(405).json({

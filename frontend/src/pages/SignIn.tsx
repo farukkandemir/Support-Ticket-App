@@ -1,16 +1,47 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import InputTextFieldWithLabel from "../components/InputTextFieldWithLabel";
 import { useForm } from "react-hook-form";
+import { apiCallToServer } from "../helpers/helpers";
+import { useAuth } from "../context/AuthProvider";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Valid email is required" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+});
 
 const SignIn = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
 
-  const onFormSubmit = (data: any) => {
-    console.log(data);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const onFormSubmit = async (data: any) => {
+    const response = await apiCallToServer({
+      method: "POST",
+      path: "login",
+      data,
+      callback: (data: any) => data,
+    });
+
+    if (!response.success) {
+      return toast.error(response.message);
+    }
+
+    login(response.token, response.user);
+
+    return toast.success("Logged in successfully!");
   };
 
   return (
@@ -53,8 +84,7 @@ const SignIn = () => {
               inputType="register-based"
               register={register}
               error={!!errors.email}
-              // helperText={errors.email?.message}
-              helperText={"Email is required"}
+              helperText={errors.email?.message as string}
             />
             <InputTextFieldWithLabel
               type="password"
@@ -63,11 +93,19 @@ const SignIn = () => {
               inputType="register-based"
               register={register}
               error={!!errors.password}
-              // helperText={errors.password?.message}
-              helperText={"Password is required"}
+              helperText={errors.password?.message as string}
             />
             <Button variant="contained" type="submit">
               Sign In
+            </Button>
+
+            <Button
+              variant="text"
+              onClick={() => {
+                navigate("/sign-up");
+              }}
+            >
+              Don't have an account? Sign Up
             </Button>
           </Box>
         </Box>
