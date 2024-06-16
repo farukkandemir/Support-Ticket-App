@@ -9,7 +9,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://support-ticket-app-client.vercel.app/",
+      "https://support-ticket-app-client.vercel.app",
     ],
   })
 );
