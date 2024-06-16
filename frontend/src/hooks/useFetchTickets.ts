@@ -9,6 +9,8 @@ const useFetchTickets = () => {
 
   const auth = useAuth();
 
+  console.log("auth:", auth);
+
   const { userData, loading } = auth || {};
   const { _id: userId } = userData || {};
 
@@ -32,7 +34,7 @@ const useFetchTickets = () => {
   };
 
   useEffect(() => {
-    if (isTicketFetching && !loading && userId) {
+    if (!tickets.length && isTicketFetching && !loading && userId) {
       fetchTickets();
     }
   }, [isTicketFetching, loading, userId]);

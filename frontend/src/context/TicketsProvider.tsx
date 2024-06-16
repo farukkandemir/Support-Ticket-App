@@ -36,9 +36,7 @@ export const useTickets = () => {
   return context;
 };
 
-export const TicketProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const TicketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { userData } = auth || {};
 
@@ -97,3 +95,5 @@ export const TicketProvider: React.FC<{ children: ReactNode }> = ({
     </TicketContext.Provider>
   );
 };
+
+export default TicketProvider;

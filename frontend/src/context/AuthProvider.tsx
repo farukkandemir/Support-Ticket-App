@@ -64,7 +64,8 @@ const AuthProvider = ({ children }: { children: any }) => {
     setUserData(null);
     setIsAuthenticated(false);
 
-    return navigate("/sign-in");
+    navigate("/sign-in");
+    window.location.reload();
   };
 
   return (
