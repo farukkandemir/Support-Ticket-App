@@ -12,12 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/tickets", require("./routes/ticket-routes"));
 
-// Connect to MongoDB
-
 mongoose
-  .connect(
-    "mongodb+srv://farukkandemir09:uReEf2v9dGNbtKIC@helpdesk.2mfutjj.mongodb.net/"
-  )
+  .connect(process.env.MONGO_DB_URI)
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.log(err));
 
