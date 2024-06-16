@@ -1,27 +1,18 @@
-import { Box, Container, Skeleton, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { useTickets } from "../context/TicketsProvider";
 import TicketsTable from "../components/TicketsTable";
 import { useNavigate } from "react-router-dom";
 
 const TableSkeleton = () => {
   return (
-    <Box>
-      {[...Array(5)].map((_, index) => (
-        <Box
-          key={index}
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "1rem",
-            padding: "1rem",
-            borderRadius: "5px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Skeleton variant="rounded" height="2vh" />
-        </Box>
-      ))}
+    <Box
+      sx={{
+        display: "grid",
+        placeItems: "center",
+        height: "100%",
+      }}
+    >
+      <CircularProgress size={48} />
     </Box>
   );
 };
@@ -47,6 +38,7 @@ const AdminDashboard = () => {
           flexDirection: "column",
           gap: "1rem",
           padding: "1rem",
+          height: "100%",
         }}
       >
         <Typography variant="h5">Admin Dashboard</Typography>

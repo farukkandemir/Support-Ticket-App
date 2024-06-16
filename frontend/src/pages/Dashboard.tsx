@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTickets } from "../context/TicketsProvider";
 import EmptyDashboard from "../components/EmptyDashboard";
 import NewTicketForm from "../components/NewTicketForm";
-import { Box, Container, Skeleton } from "@mui/material";
+import { Box, CircularProgress, Container } from "@mui/material";
 import Navbar from "../components/Navbar";
 import TicketList from "../components/TicketList";
 
@@ -18,8 +18,14 @@ const Dashboard = () => {
 
   if (isTicketFetching) {
     return (
-      <Box>
-        <Skeleton variant="rectangular" width="100%" height="100vh" />
+      <Box
+        sx={{
+          display: "grid",
+          placeItems: "center",
+          height: "100%",
+        }}
+      >
+        <CircularProgress size={48} />
       </Box>
     );
   }
