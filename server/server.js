@@ -23,6 +23,8 @@ mongoose
 
 app.listen(PORT, console.log(`Server is running at port ${PORT}`));
 
+module.exports = app;
+
 /// mongodb credentials
 // username: farukkandemir09
 // password: uReEf2v9dGNbtKIC
