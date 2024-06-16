@@ -21,6 +21,8 @@ const createNewTicket = async (req, res) => {
     const newTicket = new Ticket(ticket);
     await newTicket.save();
 
+    console.log(`Email sent for new ticket with ID: ${newTicket._id}`);
+
     return res.status(201).json({
       success: true,
       message: "Ticket created successfully",
@@ -124,6 +126,8 @@ const updateTicketStatus = async (req, res) => {
         message: "Ticket not found",
       });
     }
+
+    console.log(`Email sent for updated ticket with ID: ${updatedTicket._id}`);
 
     return res.status(200).json({
       success: true,
