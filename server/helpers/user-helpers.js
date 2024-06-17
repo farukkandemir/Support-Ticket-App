@@ -5,7 +5,8 @@ const findUserById = async (userId) => {
   try {
     return await User.findById(userId);
   } catch (error) {
-    throw new Error("Error finding user");
+    console.error(`Error finding user with ID ${userId}:`, error);
+    throw new Error(`Error finding user with ID ${userId}`);
   }
 };
 
@@ -17,7 +18,8 @@ const createTicket = async (ticketData, userId) => {
     });
     return await newTicket.save();
   } catch (error) {
-    throw new Error("Error creating ticket");
+    console.error(`Error creating ticket for user ID ${userId}:`, error);
+    throw new Error(`Error creating ticket for user ID ${userId}`);
   }
 };
 
@@ -26,7 +28,11 @@ const associateTicketWithUser = async (user, ticketId) => {
     user.tickets.push(ticketId);
     await user.save();
   } catch (error) {
-    throw new Error("Error associating ticket with user");
+    console.error(
+      `Error associating ticket ID ${ticketId} with user ID ${user._id}:`,
+      error
+    );
+    throw new Error(`Error associating ticket ID ${ticketId} with user`);
   }
 };
 

@@ -32,6 +32,11 @@ const createNewTicket = async (req, res) => {
     }
 
     const newTicket = await createTicket(ticket, user._id);
+
+    if (!newTicket) {
+      throw new Error("Error creating ticket");
+    }
+
     await associateTicketWithUser(user, newTicket._id);
 
     console.log(`Email sent for new ticket with ID: ${newTicket._id}`);
