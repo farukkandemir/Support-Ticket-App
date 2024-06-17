@@ -70,6 +70,7 @@ const NewTicketForm = ({
       ...ticket,
       id: generateSixDigitCode(),
       status: "new",
+      replies: [],
     };
 
     await createTicket(newTicket);
