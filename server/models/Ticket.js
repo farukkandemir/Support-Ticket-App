@@ -7,7 +7,7 @@ const ticketSchema = new Schema({
   email: { type: String, required: true },
   subject: { type: String, required: true },
   description: { type: String, required: true },
-  priority: { type: String, required: true, enum: ["Low", "Medium", "High"] },
+  priority: { type: String, required: true },
   id: { type: Number, required: true, unique: true },
   status: {
     type: String,
